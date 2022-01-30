@@ -1,4 +1,4 @@
-package tech.henriquedev.convidados.ui.gallery
+package tech.henriquedev.convidados.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import tech.henriquedev.convidados.databinding.FragmentGalleryBinding
+import tech.henriquedev.convidados.viewmodel.PresentViewModel
 
 class PresentFragment : Fragment() {
 
