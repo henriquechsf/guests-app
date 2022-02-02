@@ -1,5 +1,6 @@
 package tech.henriquedev.convidados.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tech.henriquedev.convidados.R
 import tech.henriquedev.convidados.databinding.FragmentAllBinding
+import tech.henriquedev.convidados.service.constants.GuestConstants
 import tech.henriquedev.convidados.view.adapter.GuestAdapter
+import tech.henriquedev.convidados.view.listener.GuestListener
 import tech.henriquedev.convidados.viewmodel.AllGuestsViewModel
 
 class AllGuestsFragment : Fragment() {
 
     private lateinit var allGuestsViewModel: AllGuestsViewModel
     private var _binding: FragmentAllBinding? = null
+    private lateinit var mListener: GuestListener
 
     private val mAdapter: GuestAdapter = GuestAdapter()
 
@@ -45,6 +49,20 @@ class AllGuestsFragment : Fragment() {
 
         // 3 - Definir um adapter
         recycler.adapter = mAdapter
+
+        mListener = object : GuestListener {
+            override fun onClick(id: Int) {
+                val intent = Intent(context, GuestFormActivity::class.java)
+
+                val bundle = Bundle()
+                bundle.putInt(GuestConstants.GUEST_ID, id)
+
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+
+        mAdapter.attachListener(mListener)
 
         observer()
         allGuestsViewModel.load()
