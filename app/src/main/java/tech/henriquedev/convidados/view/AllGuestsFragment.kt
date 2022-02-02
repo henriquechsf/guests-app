@@ -19,7 +19,7 @@ import tech.henriquedev.convidados.viewmodel.AllGuestsViewModel
 
 class AllGuestsFragment : Fragment() {
 
-    private lateinit var allGuestsViewModel: AllGuestsViewModel
+    private lateinit var mViewModel: AllGuestsViewModel
     private var _binding: FragmentAllBinding? = null
     private lateinit var mListener: GuestListener
 
@@ -34,7 +34,7 @@ class AllGuestsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        allGuestsViewModel =
+        mViewModel =
             ViewModelProvider(this).get(AllGuestsViewModel::class.java)
 
         _binding = FragmentAllBinding.inflate(inflater, container, false)
@@ -60,25 +60,30 @@ class AllGuestsFragment : Fragment() {
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
+
+            override fun onDelete(id: Int) {
+                mViewModel.delete(id)
+                mViewModel.load()
+            }
         }
 
         mAdapter.attachListener(mListener)
 
         observer()
-        allGuestsViewModel.load()
+        mViewModel.load()
 
         return root
     }
 
     private fun observer() {
-        allGuestsViewModel.guestList.observe(viewLifecycleOwner, Observer { guests ->
+        mViewModel.guestList.observe(viewLifecycleOwner, Observer { guests ->
             mAdapter.updateGuests(guests)
         })
     }
 
     override fun onResume() {
         super.onResume()
-        allGuestsViewModel.load()
+        mViewModel.load()
     }
 
     override fun onDestroyView() {
