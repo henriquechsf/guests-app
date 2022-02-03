@@ -15,11 +15,11 @@ import tech.henriquedev.convidados.databinding.FragmentAllBinding
 import tech.henriquedev.convidados.service.constants.GuestConstants
 import tech.henriquedev.convidados.view.adapter.GuestAdapter
 import tech.henriquedev.convidados.view.listener.GuestListener
-import tech.henriquedev.convidados.viewmodel.AllGuestsViewModel
+import tech.henriquedev.convidados.viewmodel.GuestsViewModel
 
 class AllGuestsFragment : Fragment() {
 
-    private lateinit var mViewModel: AllGuestsViewModel
+    private lateinit var mViewModel: GuestsViewModel
     private var _binding: FragmentAllBinding? = null
     private lateinit var mListener: GuestListener
 
@@ -29,13 +29,9 @@ class AllGuestsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View? {
         mViewModel =
-            ViewModelProvider(this).get(AllGuestsViewModel::class.java)
+            ViewModelProvider(this).get(GuestsViewModel::class.java)
 
         _binding = FragmentAllBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -63,19 +59,19 @@ class AllGuestsFragment : Fragment() {
 
             override fun onDelete(id: Int) {
                 mViewModel.delete(id)
-                mViewModel.load()
+                mViewModel.load(GuestConstants.FILTER.EMPTY)
             }
         }
 
         mAdapter.attachListener(mListener)
 
-        observer()
-        mViewModel.load()
+        observe()
+        mViewModel.load(GuestConstants.FILTER.EMPTY)
 
         return root
     }
 
-    private fun observer() {
+    private fun observe() {
         mViewModel.guestList.observe(viewLifecycleOwner, Observer { guests ->
             mAdapter.updateGuests(guests)
         })
@@ -83,7 +79,7 @@ class AllGuestsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mViewModel.load()
+        mViewModel.load(GuestConstants.FILTER.EMPTY)
     }
 
     override fun onDestroyView() {
